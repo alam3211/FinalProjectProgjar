@@ -2,6 +2,7 @@ import sys
 import os
 import json
 import uuid
+import traceback
 from queue import Queue
 
 class Chat:
@@ -9,6 +10,7 @@ class Chat:
 		self.sessions={}
 		self.users = {}
 	def proses(self,data):
+		print "In >> " + data
 		inData=data.split(" ")
 		for i in range(len(inData)):
 			inData[i] = inData[i].strip()
@@ -23,20 +25,27 @@ class Chat:
 				usernameFrom = self.sessions[sessId]['username']
 				usernameDest = inData[2]
 				message = inData[3]
-				return self.send_message(sessId, username_from, username_dest, message)
+				return self.send_message(sessId, usernameFrom, usernameDest, message)
 			elif command == "inbox":
 				sessId = inData[1]
 				username = inData[2]
 				return self.get_inbox(sessId, username)
+			elif command == "create_user":
+				username = inData[1]
+				password = inData[2]
+				name = inData[3]
+				nationality = inData[4]
+				return self.create_user(username, password, name, nationality)
 			else:
 				return {'status': 'ERROR', 'message': 'Protocol Tidak Benar'}
-		except IndexError:
-			return {'status': 'ERROR', 'message': 'Protocol Tidak Benar'}
+		except Exception as e:
+			traceback.print_exc()
+			return {'status': 'ERROR', 'message': str(e)}
 	def create_user(self, username, password, name, nationality):
 		if username in self.users:
 			return {'status': 'ERROR', 'message': 'Username sudah digunakan'}
 		self.users[username] = {'name' : name, 'nationality': nationality, 'password': password, 'incoming' : {}, 'outgoing': {}}
-		return self.users[username]
+		return {'username': username, 'name': name, 'natinality': nationality}
 	def autentikasi_user(self,username,password):
 		if (username not in self.users):
 			return { 'status': 'ERROR', 'message': 'User Tidak Ada' }
@@ -58,7 +67,7 @@ class Chat:
 		if (s_fr==False or s_to==False):
 			return {'status': 'ERROR', 'message': 'User Tidak Ditemukan'}
 
-		message = { 'msg_from': s_fr['nama'], 'msg_to': s_to['nama'], 'msg': message }
+		message = { 'msg_from': s_fr['name'], 'msg_to': s_to['name'], 'msg': message }
 		outqueue_sender = s_fr['outgoing']
 		inqueue_receiver = s_to['incoming']
 		try:	
@@ -74,7 +83,7 @@ class Chat:
 		return {'status': 'OK', 'message': 'Message Sent'}
 
 	def get_inbox(self,sessId, username):
-		if (sessionid not in self.sessions):
+		if (sessId not in self.sessions):
 			return {'status': 'ERROR', 'message': 'Session Tidak Ditemukan'}
 		s_fr = self.get_user(username)
 		incoming = s_fr['incoming']

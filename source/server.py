@@ -5,7 +5,8 @@ import thread
 import time
 import sys
 import json
-from .component.chat import Chat
+import signal
+from chat import Chat
 
 chatserver = Chat()
 
@@ -17,12 +18,17 @@ class ProcessTheClient(threading.Thread):
 
 	def run(self):
 		while True:
-			data = self.connection.recv(32)
+			data = self.connection.recv(1024)
 			if data:
 				self.connection.sendall(json.dumps(chatserver.proses(data)))
 			else:
 				break
 		self.connection.close()
+
+	def recv(self):
+		return str(self.connection.recv(1024)).rstrip()
+	def send(self, data):
+		self.connection.send(str(data).ljust(1024))
 
 class Server(threading.Thread):
 	def __init__(self):
@@ -43,8 +49,12 @@ class Server(threading.Thread):
 	
 
 def main():
+	def sigint_handler(signal, frame):
+		sys.exit(0)
+	signal.signal(signal.SIGINT, sigint_handler)
 	svr = Server()
 	svr.start()
+
 
 if __name__=="__main__":
 	main()
