@@ -16,9 +16,9 @@ It will turn on the client and then you can do these protocols
 
 
 ## Client Command Usage
-Logout
+### Logout ###
 simply type 
 ```bash
-logout
+$ logout
 ```
 and then you will go logout from your current session.
