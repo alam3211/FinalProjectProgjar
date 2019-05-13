@@ -48,13 +48,15 @@ class Client:
                 elif command == "send file":
                     self.process_send_file()
                 elif command == "get file":
-                    self.process_send_file()
+                    self.process_get_file()
                 elif command == "list file":
-                    self.process_send_file()
+                    self.process_list_file()
                 elif command == "inbox":
                     self.perform_inbox()
                 elif command == "join room":
                     self.perform_room_join()
+                elif command == "logout":
+                    self.perform_logout()
 
         except Exception as e:
             print "Error! " + e.message
@@ -82,7 +84,7 @@ class Client:
     def process_send_file(self):
         fileName = raw_input("File Name: ")
         destUsername = raw_input("Recipient Username: ")
-        rawFile = smartfile.SmartFile(self.baseDir+"")
+        rawFile = smartfile.SmartFile(self.baseDir+"/"+self.username+"/"+fileName)
         rawFile.read()
         payload = rawFile.get_representation()
         payload = base64.b64encode(payload)
@@ -99,7 +101,11 @@ class Client:
         self.send_request("file_get", {'session': self.sessionId, 'filename': fileName})
         response = self.get_response()
         if response['status'] == "OK":
-            print response
+            payload = response['payload']
+            payload = base64.b64decode(payload)
+            targetFile = smartfile.SmartFile(self.baseDir+"/"+self.username+"/"+fileName)
+            targetFile.write(payload)
+            print response['name']
         else:
             raise Exception(response['error'])
 
@@ -117,7 +123,6 @@ class Client:
         self.send_request("inbox", {'session': self.sessionId})
         response = self.get_response()
         if response['status'] == "OK":
-            self.sessionId = None
             #TODO : format
             print response
         else:
@@ -150,6 +155,8 @@ class Client:
         response = self.get_response()
         if response['status'] == "OK":
             self.sessionId = response['tokenid']
+            self.username = username
+            self.prepare_directory(username)
             print "Login ["+username+"] telah berhasil"
         else:
             raise Exception("Gagal melakukan login, " + response['error'])

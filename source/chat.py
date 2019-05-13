@@ -39,19 +39,19 @@ class Chat:
 				executer = self.autentikasi_user
 			elif command == "file_list":
 				sessionData = self.get_session(param['session'])
-				username = self.get_user(sessionData['username'])
-				packed = (username)
+				username = sessionData['username']
+				packed = (username,)
 				executer = self.list_file
 			elif command == "file_get":
 				sessionData = self.get_session(param['session'])
-				username = self.get_user(sessionData['username'])
+				username = sessionData['username']
 				fileName = param['filename']
 				packed = (username, fileName)
 				executer = self.get_file
 			elif command == "file_send":
 				sessionData = self.get_session(param['session'])
-				fromUsername = self.get_user(sessionData['username'])
-				destUsername = self.get_user(param['username'])
+				fromUsername = sessionData['username']
+				destUsername = param['username']
 				fileName = param['filename']
 				payload = param['payload']
 				packed = (fromUsername, destUsername, fileName, payload)
@@ -59,7 +59,7 @@ class Chat:
 			elif command == "logout":
 				sessionData = self.get_session(param['session'])
 				sessId = param['session']
-				packed = (sessId)
+				packed = (sessId,)
 				executer = self.logout
 			elif command == "send":
 				sessionData = self.get_session(param['session'])
@@ -71,7 +71,7 @@ class Chat:
 			elif command == "inbox":
 				sessionData = self.get_session(param['session'])
 				username = sessionData['username']
-				packed = (username)
+				packed = (username,)
 				executer = self.get_inbox
 			elif command == "register":
 				username = param['username']
@@ -84,6 +84,7 @@ class Chat:
 				return {'status': 'ERROR', 'message': 'Fitur belum tersedia'}
 			return executer(*packed)
 		except Exception as e:
+			traceback.print_exc()
 			return {'status': 'ERROR', 'message': 'Protocol Tidak Benar', 'error': str(e.message)}
 
 	def send_file(self, fromUsername, destUsername, fileName, encodedFile):
@@ -93,6 +94,7 @@ class Chat:
 			raise Exception("File dengan nama [" + fileName + "] sudah pernah ada")
 		
 		try:
+			os.mkdir(self.baseDir+"/"+destUsername)
 			encodedFile = base64.b64decode(encodedFile)
 			fileLoc = self.baseDir+"/"+destUsername+"/"+fileName
 			smartFile = smartfile.SmartFile(fileLoc)
