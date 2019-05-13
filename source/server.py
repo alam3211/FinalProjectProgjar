@@ -6,29 +6,28 @@ import time
 import sys
 import json
 import signal
-from chat import Chat
+import chat
+import smartconn
 
-chatserver = Chat()
+chatserver = chat.Chat()
 
 class ProcessTheClient(threading.Thread):
 	def __init__(self,connection,address):
-		self.connection = connection
+		self.conn = smartconn.SmartConnection(connection)
 		self.address = address
 		threading.Thread.__init__(self)
 
 	def run(self):
 		while True:
-			data = self.connection.recv(1024)
+			data = self.conn.recv()
 			if data:
-				self.connection.sendall(json.dumps(chatserver.proses(data)))
+				res = json.dumps(chatserver.proses(data))
+				self.conn.send(res)
 			else:
 				break
-		self.connection.close()
+		self.conn.close()
 
-	def recv(self):
-		return str(self.connection.recv(1024)).rstrip()
-	def send(self, data):
-		self.connection.send(str(data).ljust(1024))
+	
 
 class Server(threading.Thread):
 	def __init__(self):
@@ -38,7 +37,8 @@ class Server(threading.Thread):
 
 	def run(self):
 		self.my_socket.bind(('0.0.0.0',8889))
-		self.my_socket.listen(1)
+		self.my_socket.listen(100)
+		print "Server started"
 		while True:
 			self.connection, self.client_address = self.my_socket.accept()
 			print >> sys.stderr, 'connection from', self.client_address
