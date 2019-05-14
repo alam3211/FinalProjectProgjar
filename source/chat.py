@@ -174,7 +174,7 @@ class Chat:
 		except KeyError:
 			inqueue_receiver[username_from]=Queue.Queue()
 			inqueue_receiver[username_from].put(message)
-		return {'status': 'OK', 'message': 'Message Sent'}
+		return {'status': 'OK', 'message': 'Message Sent', 'user': username_dest}
 
 	def get_inbox(self, username):
 		s_fr = self.get_user(username)
