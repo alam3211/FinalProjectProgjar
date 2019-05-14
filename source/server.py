@@ -21,7 +21,7 @@ class ProcessTheClient(threading.Thread):
 		while True:
 			data = self.conn.recv()
 			if data:
-				res = json.dumps(chatserver.proses(data))
+				res = json.dumps(chatserver.proses(data, self.conn))
 				self.conn.send(res)
 			else:
 				break

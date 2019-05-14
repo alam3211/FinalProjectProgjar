@@ -9,6 +9,8 @@ import json
 import shutil
 import smartfile
 import base64
+import sys
+import traceback
 
 TARGET_IP = "127.0.0.1"
 TARGET_PORT = 8889
@@ -27,11 +29,40 @@ class Client:
         while True:
             if self.isSynchronous:
                 self.handle_synchronous()
+            else:
+                self.handle_asynchronous()
+
+    def handle_asynchronous(self):
+        rawSock = self.conn.raw_socket()
+        print "Out: ",
+        sys.stdout.flush()
+        try:
+            readAbleSockets, writeAbleSockets, errorSockets = select.select([sys.stdin, rawSock], [], [])
+            for reader in readAbleSockets:
+                if reader == self.conn.raw_socket():
+                    print '\r',
+                    response = self.get_response()
+                    self.handle_async_response(response)
+                else :
+                    message = sys.stdin.readline()
+                    self.send_request("room_chat", {"message": message, "session": self.sessionId})
+        except KeyboardInterrupt as e:
+            self.send_request('room_leave', {'session': self.sessionId})
+            response = self.get_response()
+            if response['status'] == "OK":
+                self.isSynchronous = True
+                print response['messages']
+            else:
+                print response['error']
+            
+
+    def handle_async_response(self, response):
+        if "type" in response:
+            if response['type'] == "broadcast" and response['username'] != self.username:
+                print "In["+response['display'] + "]: " + response['messages'].rstrip()
+            
 
     def handle_synchronous(self):
-        self.handle_input()
-
-    def handle_input(self):
         try:
             if self.sessionId == None:
                 command = raw_input("Command [login|register] : ")
@@ -129,8 +160,17 @@ class Client:
             raise Exception(response['error'])
 
     def perform_room_join(self):
-        #TODO : make
-        raise Exception("Not Implemented!")
+        roomname = raw_input("Room Code: ")
+        self.send_request("room_join", {'session': self.sessionId, 'roomname': roomname})
+        response = self.get_response()
+        if response['status'] == "OK":
+            self.isSynchronous = False
+            print response['messages']
+            print "List User : "
+            for index in range(len(response['users'])):
+                print str(index+1) + '. ' +response['users'][index]
+        else:
+            raise Exception(response['error'])
         
 
     def perform_register(self):
@@ -163,9 +203,8 @@ class Client:
 
     def prepare_directory(self, name):
         clientDir = self.baseDir + "/"+name
-        if os.path.isdir(clientDir):
-            shutil.rmtree(clientDir)
-        os.makedirs(clientDir)
+        if not os.path.exists(clientDir):
+            os.makedirs(clientDir)
 
     def send_request(self, command, payload):
         encoded = urllib.urlencode(payload)
@@ -174,8 +213,6 @@ class Client:
     def get_response(self):
         return json.loads(self.conn.recv())
 
-    
-
-
-client = Client(TARGET)
-client.run()
+if __name__ == "__main__":
+    client = Client(TARGET)
+    client.run()
