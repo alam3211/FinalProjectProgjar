@@ -130,7 +130,7 @@ Bye bye !
 
 # Server
 Semua data dikirimkan dalam bentuk urlencoded data, lihatlah contoh jika bingung. Semua perintah dikirim dalam bentuk `command` `payload`
-## Autentikasi User
+### Autentikasi User
 Command `auth`
 
 Payload :
@@ -146,7 +146,7 @@ Example :
     message : String
 ```
 
-## Register
+### Register
 Command `register`
 Payload :
 ```
@@ -165,7 +165,7 @@ Example:
     message: String
 ```
 
-## Inbox
+### Inbox
 Command `inbox`
 Payload :
 ```
@@ -180,7 +180,7 @@ Output:
   session: String
 ```
 
-## Logout
+### Logout
 Command `logout`
 Payload:
 ```
@@ -195,7 +195,7 @@ Example:
   session:String
 ```
 
-## File List
+### File List
 Command `file_list`
 Payload:
 ```
@@ -208,5 +208,41 @@ Example:
   Output:
   session:String
   message:String
+```
+
+### Upload
+Command `send file`
+Payload:
+```
+  username | string
+  session | string
+  payload | string
+  filename | string
+```
+Example:
+```
+  Input:
+  file_send username=b&session=47519264-fba6-497d-bf73-cb8ae9d1e24f&payload=iVBORwo%3D&filename=endgame.PNG
+  Output:
+  'username': String,
+  'session': '47519264-fba6-497d-bf73-cb8ae9d1e24f',
+  'payload': 'iVBORwo=',
+  'filename': 'endgame.PNG'}
+```
+
+### Download
+Command `file_list`
+Payload:
+```
+  session | string
+  filename | string
+```
+Example:
+```
+  Input:
+  file_get session=95c6ab9a-962e-4b30-93dc-6710cf5e021c&filename=endgame.PNG
+  Output:
+ 'session': String,
+ 'filename': String
 ```
 
