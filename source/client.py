@@ -76,7 +76,7 @@ class Client:
         self.send_request("file_list", {'session': self.sessionId})
         response = self.get_response()
         if response['status'] == "OK":
-            print response
+            print response['file']
         else:
             raise Exception(response['error'])
 
@@ -90,7 +90,7 @@ class Client:
         self.send_request("file_send", {'session': self.sessionId, 'filename': fileName, 'payload': payload, 'username': destUsername})
         response = self.get_response()
         if response['status'] == "OK":
-            print response
+            print "Berhasil mengirim file ! "+ response['message']+" telah dikirim."
         else:
             raise Exception(response['error'])
         
