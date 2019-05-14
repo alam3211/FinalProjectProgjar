@@ -44,12 +44,12 @@ User berhasil dibuat
 ```bash
 login
 ```
-..* #### Parameter ####
+#### Parameter ####
 ```bash
 Username :
 Password :
 ```
-..* #### Example ###
+#### Example ###
 ```bash
 register
 Username : alam
@@ -64,20 +64,20 @@ Login [$username] telah berhasil
 ```bash
 chat
 ```
-..* #### Parameter ####
+#### Parameter ####
 ```bash
 Recipient username:
 Message:
 ```
-..* #### Example ###
+#### Example ###
 ```bash
 send
 Recipient username: alam
 Message: halo testing
 ```
 Server Respond
-```json
-{u'status': u'OK', u'message': u'Message Sent'}
+```bash
+Message sent to user [$username].
 ```
 
 * ### List File ###
@@ -89,20 +89,44 @@ list file
 ```bash
 inbox
 ```
+Server Respond
+```bash
+$count message incoming.
+from $username : $message
+```
 
 * ### Download ###
 ```bash
 get file
 ```
 
-* ### Upload ###
+### Upload ###
 ```bash
 send file
+```
+> #### Parameter ####
+```bash
+File Name: 
+Recipient Username:
+```
+> #### Example ###
+```bash
+send file
+File Name: $nama_file
+Recipient Username: a
+```
+Server Respond
+```bash
+Berhasil mengirim file ! $nama_file telah dikirim.
 ```
 
 * ### Logout ###
 ```bash
 logout
+```
+Server Respond
+```bash
+Bye bye !
 ```
 
 # Server
