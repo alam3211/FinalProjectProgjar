@@ -40,12 +40,16 @@ class Server(threading.Thread):
 		self.my_socket.listen(100)
 		print "Server started"
 		while True:
-			self.connection, self.client_address = self.my_socket.accept()
-			print >> sys.stderr, 'connection from', self.client_address
-			
-			clt = ProcessTheClient(self.connection, self.client_address)
-			clt.start()
-			self.the_clients.append(clt)
+			try:
+				self.connection, self.client_address = self.my_socket.accept()
+				print >> sys.stderr, 'connection from', self.client_address
+					
+				clt = ProcessTheClient(self.connection, self.client_address)
+				clt.start()
+				self.the_clients.append(clt)
+				raw_input()
+			except KeyboardInterrupt:
+				print "Keyboard Interrupt detected, server shutdown."
 	
 
 def main():
