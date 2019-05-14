@@ -99,8 +99,7 @@ class Client:
         self.send_request("send", request)
         response = self.get_response()
         if response['status'] == "OK":
-            #TODO: Format
-            print response
+            print response['message']+" to user ["+ response['user']+"]."
         else:
             raise Exception(response['error'])
 
@@ -108,7 +107,7 @@ class Client:
         self.send_request("file_list", {'session': self.sessionId})
         response = self.get_response()
         if response['status'] == "OK":
-            print response
+            print response['file']
         else:
             raise Exception(response['error'])
 
@@ -122,7 +121,7 @@ class Client:
         self.send_request("file_send", {'session': self.sessionId, 'filename': fileName, 'payload': payload, 'username': destUsername})
         response = self.get_response()
         if response['status'] == "OK":
-            print response
+            print "Berhasil mengirim file ! "+ response['message']+" telah dikirim."
         else:
             raise Exception(response['error'])
         
@@ -154,8 +153,10 @@ class Client:
         self.send_request("inbox", {'session': self.sessionId})
         response = self.get_response()
         if response['status'] == "OK":
-            #TODO : format
-            print response
+            print str(len(response['messages']))+" messages incoming."
+            for key in response['messages'].keys():
+                for message in response['messages'][key]:
+                    print "from "+message['msg_from']+": "+message['msg']
         else:
             raise Exception(response['error'])
 
