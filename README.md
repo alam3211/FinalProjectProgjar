@@ -16,8 +16,7 @@ It will turn on the client and then you can do these protocols
 
 
 # Client Command Usage
-### Register ###
-
+* ### Register ###
 ```bash
 register
 ```
@@ -41,16 +40,16 @@ Server Respond
 User berhasil dibuat
 ```
 
-### Autentikasi ###
+* ### Autentikasi ###
 ```bash
 login
 ```
-#### Parameter ####
+..* #### Parameter ####
 ```bash
 Username :
 Password :
 ```
-#### Example ###
+..* #### Example ###
 ```bash
 register
 Username : alam
@@ -61,16 +60,16 @@ Server Respond
 Login [$username] telah berhasil
 ```
 
-### Send Message ###
+* ### Send Message ###
 ```bash
 chat
 ```
-#### Parameter ####
+..* #### Parameter ####
 ```bash
 Recipient username:
 Message:
 ```
-#### Example ###
+..* #### Example ###
 ```bash
 send
 Recipient username: alam
@@ -81,28 +80,27 @@ Server Respond
 {u'status': u'OK', u'message': u'Message Sent'}
 ```
 
-
-### List File ###
+* ### List File ###
 ```bash
 list file
 ```
 
-### Inbox ###
+* ### Inbox ###
 ```bash
 inbox
 ```
 
-### Download ###
+* ### Download ###
 ```bash
 get file
 ```
 
-### Upload ###
+* ### Upload ###
 ```bash
 send file
 ```
 
-### Logout ###
+* ### Logout ###
 ```bash
 logout
 ```
