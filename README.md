@@ -6,7 +6,7 @@ Final Project matakuliah Pemrograman Jaringan oleh Alam, Firman dan Chendra
 There are 2 step to execute this programme.
 run 
 ```bash
-$py server_thread_chat.py
+$py server.py
 ```
 It will turn on the server and waiting for the connection. And then do
 ```bash
@@ -15,39 +15,97 @@ $py chat.py
 It will turn on the client and then you can do these protocols
 
 
-## Client Command Usage
-### Create User ###
-you can simply create user using
+# Client Command Usage
+### Register ###
+
 ```bash
-create_user (username) (password) (name) (nationality)
+register
 ```
-and the server will respond to you
+#### Parameter ####
+```bash
+Username :
+Password :
+Name :
+Nationality :
+```
+#### Example ###
+```bash
+register
+Username : alam
+Password : password
+Name : alamcahya
+Nationality : Indonesia
+```
+Server Respond
+```bash
+User berhasil dibuat
+```
+
+### Autentikasi ###
+```bash
+login
+```
+#### Parameter ####
+```bash
+Username :
+Password :
+```
+#### Example ###
+```bash
+register
+Username : alam
+Password : password
+```
+Server Respond
+```bash
+Login [$username] telah berhasil
+```
 
 ### Send Message ###
-simply type 
 ```bash
-logout
+chat
+```
+#### Parameter ####
+```bash
+Recipient username:
+Message:
+```
+#### Example ###
+```bash
+send
+Recipient username: alam
+Message: halo testing
+```
+Server Respond
+```json
+{u'status': u'OK', u'message': u'Message Sent'}
 ```
 
-### Group Messaging ###
-simply type 
+
+### List File ###
 ```bash
-logout
+list file
+```
+
+### Inbox ###
+```bash
+inbox
+```
+
+### Download ###
+```bash
+get file
+```
+
+### Upload ###
+```bash
+send file
 ```
 
 ### Logout ###
-simply type 
 ```bash
 logout
 ```
-and then you will go logout from your current session.
-
-### Logout ###
-simply type 
-```bash
-logout
-```
-and then you will go logout from your current session.
 
 # Server
 Semua data dikirimkan dalam bentuk urlencoded data, lihatlah contoh jika bingung. Semua perintah dikirim dalam bentuk `command` `payload`
@@ -72,8 +130,8 @@ Command `register`
 Payload :
 ```
   username | string
-  nationality | string
   password | string
+  nationality | string
   name | string
 ```
 
