@@ -2,32 +2,30 @@
 Final Project matakuliah Pemrograman Jaringan oleh Alam, Firman dan Chendra
 "Chat server"
 
-## How To
-There are 2 step to execute this programme.
+# How  to Run #
+Terdapat 2 tahap untuk menjalankan aplikasi ini.
 run 
 ```bash
 $py server.py
 ```
-It will turn on the server and waiting for the connection. And then do
+Hal ini akan menyalakan Server dan menunggu koneksi dari client. Lalu jalankan
 ```bash
 $py chat.py
 ```
-It will turn on the client and then you can do these protocols
+Hal ini akan menyalakan client dan mengkoneksikan kepada Server.
 
 
 # Client Command Usage
-* ### Register ###
-```bash
-register
-```
-#### Parameter ####
+### Register ###
+Command `register` untuk mendaftarkan akun.
+> #### Parameter ####
 ```bash
 Username :
 Password :
 Name :
 Nationality :
 ```
-#### Example ###
+> #### Example ###
 ```bash
 register
 Username : alam
@@ -35,75 +33,60 @@ Password : password
 Name : alamcahya
 Nationality : Indonesia
 ```
-Server Respond
+> Server Respond
 ```bash
 User berhasil dibuat
 ```
 
-* ### Autentikasi ###
-```bash
-login
-```
-#### Parameter ####
+### Autentikasi ###
+Command `login` untuk melakukan autentikasi.
+> #### Parameter ####
 ```bash
 Username :
 Password :
 ```
-#### Example ###
+> #### Example ###
 ```bash
 register
 Username : alam
 Password : password
 ```
-Server Respond
+> Server Respond
 ```bash
 Login [$username] telah berhasil
 ```
 
-* ### Send Message ###
-```bash
-chat
-```
-#### Parameter ####
+### Send Message ###
+Command `chat` untuk mengirim pesan kepada user lain.
+> #### Parameter ####
 ```bash
 Recipient username:
 Message:
 ```
-#### Example ###
+> #### Example ###
 ```bash
 send
 Recipient username: alam
 Message: halo testing
 ```
-Server Respond
+> Server Respond
 ```bash
 Message sent to user [$username].
 ```
 
-* ### List File ###
-```bash
-list file
-```
+### List File ###
+Command `list file` untuk melakukan listing file yang tersedia untuk user download.
 
-* ### Inbox ###
-```bash
-inbox
-```
-Server Respond
+### Inbox ###
+Command `inbox` untuk melihat apakah ada pesan masuk atau tidak.
+> Server Respond
 ```bash
 $count message incoming.
 from $username : $message
 ```
 
-* ### Download ###
-```bash
-get file
-```
-
-### Upload ###
-```bash
-send file
-```
+### Download ###
+Command `get file` untuk melakukan unduh pada file yang ada.
 > #### Parameter ####
 ```bash
 File Name: 
@@ -115,16 +98,32 @@ send file
 File Name: $nama_file
 Recipient Username: a
 ```
-Server Respond
+> Server Respond
 ```bash
 Berhasil mengirim file ! $nama_file telah dikirim.
 ```
 
-* ### Logout ###
+### Upload ###
+Command `send file` untuk mengirim file kepada user lain.
+> #### Parameter ####
 ```bash
-logout
+File Name: 
+Recipient Username:
 ```
-Server Respond
+> #### Example ###
+```bash
+send file
+File Name: $nama_file
+Recipient Username: a
+```
+> Server Respond
+```bash
+Berhasil mengirim file ! $nama_file telah dikirim.
+```
+
+### Logout ###
+Command `logout` untuk keluar dari akun saat ini.
+> Server Respond
 ```bash
 Bye bye !
 ```
