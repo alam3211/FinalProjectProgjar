@@ -196,7 +196,7 @@ Example:
 ```
 
 ### File List
-Command `file_list`
+Command `file list`
 Payload:
 ```
   session | string
@@ -231,7 +231,7 @@ Example:
 ```
 
 ### Download
-Command `file_list`
+Command `file get`
 Payload:
 ```
   session | string
