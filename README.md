@@ -148,6 +148,7 @@ Example :
 
 ### Register
 Command `register`
+
 Payload :
 ```
   username | string
@@ -167,6 +168,7 @@ Example:
 
 ### Inbox
 Command `inbox`
+
 Payload :
 ```
   session | string
@@ -182,6 +184,7 @@ Output:
 
 ### Logout
 Command `logout`
+
 Payload:
 ```
   session | string
@@ -197,6 +200,7 @@ Example:
 
 ### File List
 Command `file list`
+
 Payload:
 ```
   session | string
@@ -212,6 +216,7 @@ Example:
 
 ### Unggah File
 Command `send file`
+
 Payload:
 ```
   username | string
@@ -232,6 +237,7 @@ Example:
 
 ### Unduh File
 Command `file get`
+
 Payload:
 ```
   session | string
@@ -248,6 +254,7 @@ Example:
 
 ### Masuk Room Chat
 Command `room_join`
+
 Payload:
 ```
   roomname | string
@@ -264,6 +271,7 @@ Example:
 
 ### Kirim Pesan ke Room Chat
 Command `room_chat`
+
 Payload:
 ```
   message | string
@@ -280,6 +288,7 @@ Example:
 
 ### Keluar Room Chat
 Command `room_leave`
+
 Payload:
 ```
   session | string
