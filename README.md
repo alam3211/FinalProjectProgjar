@@ -210,7 +210,7 @@ Example:
   message:String
 ```
 
-### Upload
+### Unggah File
 Command `send file`
 Payload:
 ```
@@ -230,7 +230,7 @@ Example:
   'filename': 'endgame.PNG'}
 ```
 
-### Download
+### Unduh File
 Command `file get`
 Payload:
 ```
@@ -246,3 +246,48 @@ Example:
  'filename': String
 ```
 
+### Masuk Room Chat
+Command `room_join`
+Payload:
+```
+  roomname | string
+  session | string
+```
+Example:
+```
+  Input:
+  room_join roomname=12345+67890&session=1234567utrhdfsdfge5
+  Output:
+  'roomname' : String
+  'session' : String
+```
+
+### Kirim Pesan ke Room Chat
+Command `room_chat`
+Payload:
+```
+  message | string
+  session | string
+```
+Example:
+```
+  Input:
+  room_chat message=hehehehe&session=1234567utrhdfsdfge5
+  Output:
+  'message' : String
+  'session' : String
+```
+
+### Keluar Room Chat
+Command `room_leave`
+Payload:
+```
+  session | string
+```
+Example:
+```
+  Input:
+  room_leave session=1234567utrhdfsdfge5
+  Output:
+  'session' : String
+```
