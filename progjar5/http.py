@@ -55,7 +55,7 @@ class HttpServer:
 			return self.response(400,'Bad Request','',{})
 
 	def http_get(self,object_address):
-		files = glob('./*')
+		files = glob('./public/*')
 		thedir='.'
 		if thedir+object_address not in files:
 			return self.response(404,'Not Found','',{})
@@ -72,7 +72,7 @@ class HttpServer:
 		return self.response(200,'OK',isi,headers)
 		
 	def http_head(self,object_address):
-		files = glob('./*')
+		files = glob('./public/*')
 		thedir='.'
 		if thedir+object_address not in files:
 			return self.response(404,'Not Found','',{})
@@ -96,10 +96,6 @@ class HttpServer:
 		payload = json.dumps(payload)
 		return self.response(200, 'OK', payload, headers)
 		
-			 	
-#>>> import os.path
-#>>> ext = os.path.splitext('/ak/52.png')
-
 if __name__=="__main__":
 	httpserver = HttpServer()
 	d = httpserver.proses('GET testing.txt HTTP/1.0')
