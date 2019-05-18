@@ -44,8 +44,14 @@ class Server(threading.Thread):
 	
 
 def main():
-	svr = Server()
-	svr.start()
+	portnumber=8887
+	try:
+	   portnumber=int(sys.argv[1])
+	except:
+	   pass
+	svr = Server(portnumber)
+	asyncore.loop()
+
 
 if __name__=="__main__":
 	main()
