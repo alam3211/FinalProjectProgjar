@@ -16,6 +16,7 @@ class HttpServer:
 		self.types['.jpg']='image/jpeg'
 		self.types['.txt']='text/plain'
 		self.types['.html']='text/html'
+		
 	def response(self,kode=404,message='Not Found',messagebody='',headers={}):
 		tanggal = datetime.now().strftime('%c')
 		resp=[]
@@ -31,6 +32,7 @@ class HttpServer:
 		for i in resp:	
 			response_str="{}{}" . format(response_str,i)
 		return response_str
+		
 	def proses(self,data):
 		requests = data.split("\r\n")
 		firstLine = requests[0].split(" ")
@@ -41,7 +43,7 @@ class HttpServer:
 			if (method=='GET'):
 			    address = firstLine[1]
 				return self.http_get(address)
-			if (method=='HEAD'):
+			elif (method=='HEAD'):
 				object_address = firstLine[1]
 				return self.http_head(object_address)
 			elif (method=='POST'):
@@ -49,6 +51,9 @@ class HttpServer:
 				payload = requests[len(requests)-1]
 				payload = urlparse.parse_qs(payload)
 				return self.http_post(address, payload)
+			elif (method=='OPTIONS'):
+				object_address = firstLine[1]
+				return self.http_options(object_address)
 			else:
 				return self.response(400,'Bad Request','',{})
 		except IndexError:
@@ -95,6 +100,24 @@ class HttpServer:
 		payload["address"] = address
 		payload = json.dumps(payload)
 		return self.response(200, 'OK', payload, headers)
+		
+	def http_options(self,object_address):
+		files = glob('./*')
+		thedir='.'
+		if thedir+object_address not in files:
+			return self.response(404,'Not Found','',{})
+		fp = open(thedir+object_address,'r')
+		isi = fp.read()
+		
+		fext = os.path.splitext(thedir+object_address)[1]
+		content_type = self.types[fext]
+		
+		headers={}
+		headers['Allow']="OPTIONS, HEAD, GET, POST"
+		headers['Content-type']=content_type
+		headers['Content-length']=format(len(isi))
+		
+		return self.response(200,'OK','',headers)
 		
 if __name__=="__main__":
 	httpserver = HttpServer()
