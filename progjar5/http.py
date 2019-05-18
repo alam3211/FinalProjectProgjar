@@ -1,6 +1,9 @@
 import sys
 import os.path
 import uuid
+import urlparse
+import json
+import string
 from glob import glob
 from datetime import datetime
 
@@ -8,6 +11,7 @@ class HttpServer:
 	def __init__(self):
 		self.sessions={}
 		self.types={}
+		self.types['json']='application/json'
 		self.types['.pdf']='application/pdf'
 		self.types['.jpg']='image/jpeg'
 		self.types['.txt']='text/plain'
@@ -29,23 +33,24 @@ class HttpServer:
 		return response_str
 	def proses(self,data):
 		requests = data.split("\r\n")
-		baris = requests[0]
-
-		print requests
-		firstLine = baris.split(" ")
+		firstLine = requests[0].split(" ")
 		for i in range(len(firstLine)):
 			firstLine[i] = firstLine[i].rstrip()
 		try:
 			method=firstLine[0].upper().strip()
 			if (method=='GET'):
-				object_address = firstLine[1]
-				return self.http_get(object_address)
-			if (method=='POST'):
-				return
+				address = firstLine[1]
+				return self.http_get(address)
+			elif (method=='POST'):
+				address = firstLine[1]
+				payload = requests[len(requests)-1]
+				payload = urlparse.parse_qs(payload)
+				return self.http_post(address, payload)
 			else:
 				return self.response(400,'Bad Request','',{})
 		except IndexError:
 			return self.response(400,'Bad Request','',{})
+
 	def http_get(self,object_address):
 		files = glob('./*')
 		thedir='.'
@@ -60,9 +65,17 @@ class HttpServer:
 		headers={}
 		headers['Content-type']=content_type
 		
-		return self.response(200,'OK',isi,headers)
-	def http_post(self,object_address, payload):
-		return
+		return self.response(200,'OK', isi, headers)
+ 
+	def http_post(self,address, payload):
+		headers = {}
+		headers["Content-Type"] = self.types['json']
+		for key in payload:
+			if len(payload[key]) == 1:
+				payload[key] = payload[key][0]
+		payload["address"] = address
+		payload = json.dumps(payload)
+		return self.response(200, 'OK', payload, headers)
 		
 			 	
 #>>> import os.path
