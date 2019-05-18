@@ -41,7 +41,7 @@ class HttpServer:
 		try:
 			method=firstLine[0].upper().strip()
 			if (method=='GET'):
-			    address = firstLine[1]
+				address = firstLine[1]
 				return self.http_get(address)
 			elif (method=='HEAD'):
 				object_address = firstLine[1]
@@ -61,34 +61,38 @@ class HttpServer:
 
 	def http_get(self,object_address):
 		files = glob('./public/*')
-		thedir='.'
+		print files
+		thedir='.public'
 		if thedir+object_address not in files:
 			return self.response(404,'Not Found','',{})
 		fp = open(thedir+object_address,'r')
 		isi = fp.read()
-		
+		fp.close()
 		fext = os.path.splitext(thedir+object_address)[1]
 		content_type = self.types[fext]
-		
+
 		headers={}
 		headers['Content-type']=content_type
 		headers['Content-length']=format(len(isi))
-		
+
 		return self.response(200,'OK',isi,headers)
 		
 	def http_head(self,object_address):
 		files = glob('./public/*')
-		thedir='.'
+		thedir='.public'
 		if thedir+object_address not in files:
 			return self.response(404,'Not Found','',{})
-		
+		fp = open(thedir+object_address,'r')
+		isi = fp.read()
+		fp.close()
+
 		fext = os.path.splitext(thedir+object_address)[1]
 		content_type = self.types[fext]
-		
+
 		headers={}
 		headers['Content-type']=content_type
 		headers['Content-length']=format(len(isi))
-		
+
 		return self.response(200,'OK','',headers)
  
 	def http_post(self,address, payload):
@@ -102,21 +106,21 @@ class HttpServer:
 		return self.response(200, 'OK', payload, headers)
 		
 	def http_options(self,object_address):
-		files = glob('./*')
-		thedir='.'
+		files = glob('./public/*')
+		thedir='.public'
 		if thedir+object_address not in files:
 			return self.response(404,'Not Found','',{})
 		fp = open(thedir+object_address,'r')
 		isi = fp.read()
-		
+
 		fext = os.path.splitext(thedir+object_address)[1]
 		content_type = self.types[fext]
-		
+
 		headers={}
 		headers['Allow']="OPTIONS, HEAD, GET, POST"
 		headers['Content-type']=content_type
 		headers['Content-length']=format(len(isi))
-		
+
 		return self.response(200,'OK','',headers)
 		
 if __name__=="__main__":

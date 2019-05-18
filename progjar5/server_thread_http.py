@@ -51,6 +51,7 @@ def main():
 	except:
 	   pass
 	svr = Server(portnumber)
+	svr.start()
 
 
 if __name__=="__main__":
