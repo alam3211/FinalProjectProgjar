@@ -36,9 +36,7 @@ class Server(threading.Thread):
 		self.my_socket.bind(('0.0.0.0',self.portnumber))
 		self.my_socket.listen(1)
 		while True:
-			self.connection, self.client_address = self.my_socket.accept()
-			print >> sys.stderr, 'connection from', self.client_address
-			
+			self.connection, self.client_address = self.my_socket.accept()			
 			clt = ProcessTheClient(self.connection, self.client_address)
 			clt.start()
 			self.the_clients.append(clt)
