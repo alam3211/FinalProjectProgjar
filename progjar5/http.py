@@ -40,6 +40,9 @@ class HttpServer:
 			if (method=='GET'):
 				object_address = firstLine[1]
 				return self.http_get(object_address)
+			if (method=='HEAD'):
+				object_address = firstLine[1]
+				return self.http_head(object_address)
 			if (method=='POST'):
 				return
 			else:
@@ -59,8 +62,25 @@ class HttpServer:
 		
 		headers={}
 		headers['Content-type']=content_type
+		headers['Content-length']=format(len(isi))
 		
 		return self.response(200,'OK',isi,headers)
+	def http_head(self,object_address):
+		files = glob('./*')
+		thedir='.'
+		if thedir+object_address not in files:
+			return self.response(404,'Not Found','',{})
+		fp = open(thedir+object_address,'r')
+		isi = fp.read()
+		
+		fext = os.path.splitext(thedir+object_address)[1]
+		content_type = self.types[fext]
+		
+		headers={}
+		headers['Content-type']=content_type
+		headers['Content-length']=format(len(isi))
+		
+		return self.response(200,'OK','',headers)
 	def http_post(self,object_address, payload):
 		return
 		
