@@ -61,8 +61,7 @@ class HttpServer:
 
 	def http_get(self,object_address):
 		files = glob('./public/*')
-		print files
-		thedir='.public'
+		thedir='./public'
 		if thedir+object_address not in files:
 			return self.response(404,'Not Found','',{})
 		fp = open(thedir+object_address,'r')
@@ -79,7 +78,7 @@ class HttpServer:
 		
 	def http_head(self,object_address):
 		files = glob('./public/*')
-		thedir='.public'
+		thedir='./public'
 		if thedir+object_address not in files:
 			return self.response(404,'Not Found','',{})
 		fp = open(thedir+object_address,'r')
@@ -107,7 +106,7 @@ class HttpServer:
 		
 	def http_options(self,object_address):
 		files = glob('./public/*')
-		thedir='.public'
+		thedir='./public'
 		if thedir+object_address not in files:
 			return self.response(404,'Not Found','',{})
 		fp = open(thedir+object_address,'r')
