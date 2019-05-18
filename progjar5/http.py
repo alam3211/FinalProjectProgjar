@@ -19,7 +19,6 @@ class HttpServer:
 		resp.append("Date: {}\r\n" . format(tanggal))
 		resp.append("Connection: close\r\n")
 		resp.append("Server: myserver/1.0\r\n")
-		resp.append("Content-Length: {}\r\n" . format(len(messagebody)))
 		for kk in headers:
 			resp.append("{}:{}\r\n" . format(kk,headers[kk]))
 		resp.append("\r\n")
@@ -28,19 +27,21 @@ class HttpServer:
 		for i in resp:	
 			response_str="{}{}" . format(response_str,i)
 		return response_str
-
 	def proses(self,data):
-		
 		requests = data.split("\r\n")
 		baris = requests[0]
 
-		print baris
-		j = baris.split(" ")
+		print requests
+		firstLine = baris.split(" ")
+		for i in range(len(firstLine)):
+			firstLine[i] = firstLine[i].rstrip()
 		try:
-			method=j[0].upper().strip()
+			method=firstLine[0].upper().strip()
 			if (method=='GET'):
-				object_address = j[1].strip()
+				object_address = firstLine[1]
 				return self.http_get(object_address)
+			if (method=='POST'):
+				return
 			else:
 				return self.response(400,'Bad Request','',{})
 		except IndexError:
@@ -60,6 +61,8 @@ class HttpServer:
 		headers['Content-type']=content_type
 		
 		return self.response(200,'OK',isi,headers)
+	def http_post(self,object_address, payload):
+		return
 		
 			 	
 #>>> import os.path
