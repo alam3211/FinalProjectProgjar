@@ -8,6 +8,7 @@ import hashlib
 import base64
 import shutil
 import smartfile
+import room
 import Queue
 
 class Chat:
@@ -15,12 +16,13 @@ class Chat:
 		self.hashSalt = os.urandom(128)
 		self.sessions = {}
 		self.users = {}
+		self.rooms = {}
 		self.baseDir = "server/user"
 		if os.path.isdir(self.baseDir):
 			shutil.rmtree(self.baseDir)
 		os.makedirs(self.baseDir)
 
-	def proses(self,data):
+	def proses(self,data,conn):
 		print "In >> " + data
 		data = data.rstrip()
 		splitted = data.split(" ")
@@ -80,6 +82,23 @@ class Chat:
 				nationality = param['nationality']
 				packed = (username, password, name, nationality)
 				executer = self.register
+			elif command == "room_join":
+				sessionData = self.get_session(param['session'])
+				username = sessionData['username']
+				roomname = param['roomname']
+				packed = (username, roomname, conn)
+				executer = self.join_room
+			elif command == "room_chat":
+				sessionData = self.get_session(param['session'])
+				username = sessionData['username']
+				message = param['message']
+				packed = (username, message)
+				executer = self.chat_room
+			elif command == "room_leave":
+				sessionData = self.get_session(param['session'])
+				username = sessionData['username']
+				packed = (username,)
+				executer = self.leave_room
 			else:
 				return {'status': 'ERROR', 'message': 'Fitur belum tersedia'}
 			return executer(*packed)
@@ -140,8 +159,8 @@ class Chat:
  		if (user['password'] != self.get_hashed(password)):
 			raise Exception("Password tidak benar")
 		tokenid = str(uuid.uuid4()) 
-		self.sessions[tokenid]={ 'username': username, 'userdetail':self.users[username]}
-		return { 'status': 'OK', 'tokenid': tokenid }
+		self.sessions[tokenid]={ 'username': username, 'userdetail':self.users[username], 'room': None}
+		return { "status": 'OK', 'tokenid': tokenid }
 	
 	def logout(self, sessId):
 		if sessId not in self.sessions:
@@ -185,8 +204,34 @@ class Chat:
 			while not incoming[users].empty():
 				msgs[users].append(s_fr['incoming'][users].get_nowait())
 		return {'status': 'OK', 'messages': msgs}
+	
+	def get_room(self, roomname):
+		if roomname not in self.rooms:
+			self.rooms[roomname] = room.Room(roomname)
+		return self.rooms[roomname]
 
+	def join_room(self, username, roomname, conn):
+		userData = self.get_user(username)
+		roomData = self.get_room(roomname)
+		roomData.add_client(username, userData['name'], conn)
+		userData['room'] = roomname
+		return {'status': "OK", 'messages': "Telah bergabung ke ruangan ["+roomname+"]", 'users': roomData.get_clients_name()}
 
+	def chat_room(self, username, message):
+		userData = self.get_user(username)
+		roomData = self.get_room(userData['room'])
+		roomData.broadcast(username, message)
+		return {'status': "OK", 'messages': "Broadcasted the messages"}
+
+	def leave_room(self, username):
+		userData = self.get_user(username)
+		roomname = userData['room']
+		roomData = self.get_room(roomname)
+		roomData.remove_client(username)
+		userData['room'] = None
+		return {'status': "OK", 'messages': "Telah keluar dari ruangan ["+roomname+"]"}
+
+	
 
 
 
