@@ -47,7 +47,7 @@ class Server(threading.Thread):
 				clt = ProcessTheClient(self.connection, self.client_address)
 				clt.start()
 				self.the_clients.append(clt)
-				raw_input()
+
 			except KeyboardInterrupt:
 				print "Keyboard Interrupt detected, server shutdown."
 	
