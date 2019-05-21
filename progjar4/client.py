@@ -45,7 +45,20 @@ class Client:
                     self.handle_async_response(response)
                 else :
                     message = sys.stdin.readline()
-                    self.send_request("room_chat", {"message": message, "session": self.sessionId})
+                    if message[0] == "$":
+                        message = message.split(" ")
+                        fileName = message[2].rstrip('\n')
+                        rawFile = smartfile.SmartFile(self.baseDir+"/"+self.username+"/"+fileName)
+                        rawFile.read()
+                        payload = rawFile.get_representation()
+                        payload = base64.b64encode(payload)
+                        if message[1] == "send":
+                            self.send_request("room_send_file", {"filename": fileName, "payload": payload, "session": self.sessionId})
+                            response = self.get_response()
+                            if response['status'] == "OK":
+                                self.send_request("room_chat", {"message": "file " + fileName + " has been sent to the room", "session": self.sessionId})
+                    else: 
+                        self.send_request("room_chat", {"message": message, "session": self.sessionId})
         except KeyboardInterrupt as e:
             self.send_request('room_leave', {'session': self.sessionId})
             response = self.get_response()
@@ -173,7 +186,6 @@ class Client:
         else:
             raise Exception(response['error'])
         
-
     def perform_register(self):
         username = raw_input("Username: ")
         password = getpass.getpass()

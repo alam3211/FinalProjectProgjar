@@ -94,6 +94,13 @@ class Chat:
 				message = param['message']
 				packed = (username, message)
 				executer = self.chat_room
+			elif command == "room_send_file":
+				sessionData = self.get_session(param['session'])
+				fromUsername = sessionData['username']
+				fileName = param['filename']
+				payload = param['payload']
+				packed = (fromUsername, fileName, payload)
+				executer = self.send_file_room
 			elif command == "room_leave":
 				sessionData = self.get_session(param['session'])
 				username = sessionData['username']
@@ -222,6 +229,13 @@ class Chat:
 		roomData = self.get_room(userData['room'])
 		roomData.broadcast(username, message)
 		return {'status': "OK", 'messages': "Broadcasted the messages"}
+
+	def send_file_room(self, username, filename, payload):
+		userData = self.get_user(username)
+		roomData = self.get_room(userData['room'])
+		roomData.send_file(username, userData['room'], filename, payload)
+		return {'status': "OK", 'messages': "File sent to the room."}
+
 
 	def leave_room(self, username):
 		userData = self.get_user(username)
