@@ -18,6 +18,12 @@ class Chat:
 		self.users = {}
 		self.rooms = {}
 		self.baseDir = "server/user"
+		self.roomDir = "server/room"
+
+		if os.path.isdir(self.roomDir):
+			shutil.rmtree(self.roomDir)
+		os.makedirs(self.roomDir)
+
 		if os.path.isdir(self.baseDir):
 			shutil.rmtree(self.baseDir)
 		os.makedirs(self.baseDir)
@@ -94,6 +100,19 @@ class Chat:
 				message = param['message']
 				packed = (username, message)
 				executer = self.chat_room
+			elif command == "room_send_file":
+				sessionData = self.get_session(param['session'])
+				fromUsername = sessionData['username']
+				fileName = param['filename']
+				payload = param['payload']
+				packed = (fromUsername, fileName, payload)
+				executer = self.send_file_room
+			elif command == "room_get_file":
+				sessionData = self.get_session(param['session'])
+				username = sessionData['username']
+				fileName = param['filename']
+				packed = (username, fileName)
+				executer = self.get_file_room
 			elif command == "room_leave":
 				sessionData = self.get_session(param['session'])
 				username = sessionData['username']
@@ -222,6 +241,26 @@ class Chat:
 		roomData = self.get_room(userData['room'])
 		roomData.broadcast(username, message)
 		return {'status': "OK", 'messages': "Broadcasted the messages"}
+
+	def send_file_room(self, username, filename, payload):
+		userData = self.get_user(username)
+		roomData = self.get_room(userData['room'])
+		roomData.send_file(username, userData['room'], filename, payload)
+		return {'status': "OK", 'messages': "File sent to the room."}
+
+	def get_file_room(self, username, filename):
+		userData = self.get_user(username)
+		roomData = self.get_room(userData['room'])
+		roomName = userData['room']
+		try:
+			fileLoc = self.roomDir+"/"+roomName+"/"+filename
+			smartFile = smartfile.SmartFile(fileLoc)
+			smartFile.read()
+			rawFile = smartFile.get_representation()
+			encodedFile = base64.b64encode(rawFile)
+		except Exception as e:
+			raise Exception("Gagal mengirimkan file : " + e.message)
+		return {'status': "OK", 'name':filename, 'payload': encodedFile}
 
 	def leave_room(self, username):
 		userData = self.get_user(username)
