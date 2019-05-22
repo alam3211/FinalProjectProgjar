@@ -121,6 +121,52 @@ Recipient Username: a
 Berhasil mengirim file ! $nama_file telah dikirim.
 ```
 
+### Group Chat Room ###
+Yang dilakukan untuk fitur ini ialah `join room` lalu lakukan chat seperti biasa tanpa command.
+#### Command `join room` untuk melakukan join room chat, jika tidak ada maka akan membuat room chat baru. ####
+> #### Parameter ####
+```bash
+Room Code: $roomcode
+```
+> #### Example ###
+```bash
+room join
+Room Code: foo
+```
+> Server Respond
+```bash
+Telah bergabung ke ruangan foo.
+```
+
+#### Command `$` untuk melakukan command `send` dan `get` file. Command `$` dilakukan didalam room chat ####
+> #### Parameter ####
+```bash
+$
+```
+##### `send` untuk melakukan send file pada chat room. #####
+> #### Example ###
+```bash
+$
+send ($namafile)
+```
+> Server Respond
+```bash
+$namafile telah dikirim
+```
+
+##### `download` untuk melakukan get download file pada chat room. #####
+> #### Example ###
+```bash
+$
+get ($namafile)
+```
+> Server Respond
+```bash
+$namafile telah didownload
+```
+
+
+
 ### Logout ###
 Command `logout` untuk keluar dari akun saat ini.
 > Server Respond
