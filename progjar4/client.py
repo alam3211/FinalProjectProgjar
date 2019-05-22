@@ -46,17 +46,22 @@ class Client:
                 else :
                     message = sys.stdin.readline()
                     if message[0] == "$":
+                        self.isSynchronous = True
+                        message = sys.stdin.readline()
                         message = message.split(" ")
-                        fileName = message[2].rstrip('\n')
-                        rawFile = smartfile.SmartFile(self.baseDir+"/"+self.username+"/"+fileName)
-                        rawFile.read()
-                        payload = rawFile.get_representation()
-                        payload = base64.b64encode(payload)
-                        if message[1] == "send":
+                        fileName = message[1].rstrip('\n')
+                        if message[0] == "get":
+                            self.get_room_file(fileName)
+                        if message[0] == "send":    
+                            rawFile = smartfile.SmartFile(self.baseDir+"/"+self.username+"/"+fileName)
+                            rawFile.read()
+                            payload = rawFile.get_representation()
+                            payload = base64.b64encode(payload)
                             self.send_request("room_send_file", {"filename": fileName, "payload": payload, "session": self.sessionId})
                             response = self.get_response()
                             if response['status'] == "OK":
                                 self.send_request("room_chat", {"message": "file " + fileName + " has been sent to the room", "session": self.sessionId})
+                        self.isSynchronous = False
                     else: 
                         self.send_request("room_chat", {"message": message, "session": self.sessionId})
         except KeyboardInterrupt as e:
@@ -220,11 +225,39 @@ class Client:
             os.makedirs(clientDir)
 
     def send_request(self, command, payload):
+        self.send_stateless_request(self.conn, command, payload)
+
+    def send_stateless_request(self,conn, command, payload):
         encoded = urllib.urlencode(payload)
-        self.conn.send(command + " " + encoded)
+        conn.send(command + " " + encoded)
 
     def get_response(self):
-        return json.loads(self.conn.recv())
+        return self.get_stateless_response(self.conn)
+
+    def get_stateless_response(self, conn):
+        return json.loads(conn.recv())
+
+    def get_room_file(self, filename):
+        getFileThread = threading.Thread(target=self.recv_room_file, args=(filename,))
+        getFileThread.start()
+        
+
+    def recv_room_file(self, filename):
+        conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        conn.connect(TARGET)
+        conn = smartconn.SmartConnection(conn)
+        self.send_stateless_request(conn, "room_get_file", {"session": self.sessionId, "filename": filename})
+        response = self.get_stateless_response(conn)
+        if response['status'] == "OK":
+            payload = response['payload']
+            payload = base64.b64decode(payload)
+            targetFile = smartfile.SmartFile(self.baseDir+"/"+self.username+"/"+filename)
+            targetFile.write(payload)
+            print response['name']
+        else:
+            raise Exception(response['error'])
+        conn.close()
+
 
 if __name__ == "__main__":
     client = Client(TARGET)
