@@ -50,3 +50,14 @@ Dengan jumlah request 100:
 | web server, python load balancer, async | 487.78 /sec | 790.24/sec | 957.85/sec |
 | web server, nginx load balancer, sync | 748.81 /sec | 2103.71/sec | 1429.06/sec |
 | web server, nginx load balancer, async | 603.46 /sec | 1887.72/sec | 1483.48/sec |
+
+Dengan jumlah request 1000:
+
+| Metode | -c 1 Req/sec |  -c 10 Req/sec | -c 100 Req/sec | 
+|---|---|---|---|
+| web server, non load balancer, sync | 1034.47/sec | 2094.49/sec | 1836.41/sec |
+| web server, non load balancer, async | 1212.11/sec | 2245.04/sec | 2194.80/sec |
+| web server, python load balancer, sync | 508.95/sec | 925.75/sec | 921.08/sec |
+| web server, python load balancer, async | 550.64/sec | 917.24/sec | 887.74/sec |
+| web server, nginx load balancer, sync | 898.04/sec | 2260.58/sec | 1751.10/sec |
+| web server, nginx load balancer, async | 749.47/sec | 2125.65/sec | 2641.88/sec |
