@@ -2,11 +2,12 @@
 Final Project matakuliah Pemrograman Jaringan oleh Alam, Firman dan Chendra
 
 # How to Run #
-Untuk web server tanpa load balancer, jalankan
+### Untuk web server tanpa load balancer ###
 ``` $py server_thread_http.py ``` untuk synchronous,
 ``` $py server_async_http.py ``` untuk asynchronous
 
-Untuk web server dengan load balancer, pertama jalankan
+### Untuk web server dengan load balancer ###
+Pertama, jalankan
 ```
 bash $py load_balancer.py
 ```
