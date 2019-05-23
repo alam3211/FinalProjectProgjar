@@ -63,6 +63,7 @@ Dengan jumlah request 1000:
 | web server, nginx load balancer, async | 749.47/sec | 2125.65/sec | 2641.88/sec |
 
 Dengan jumlah request 10000:
+
 | Metode | -c 1 Req/sec |  -c 10 Req/sec | -c 100 Req/sec | 
 |---|---|---|---|
 | web server, non load balancer, sync | 1101.73/sec | 2038.88/sec | 1544.71/sec |
