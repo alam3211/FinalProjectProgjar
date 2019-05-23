@@ -72,3 +72,13 @@ Dengan jumlah request 10000:
 | web server, python load balancer, async | 523.23/sec | 997.95/sec | 964.49/sec |
 | web server, nginx load balancer, sync | 934.19/sec | 2275.77/sec | 2319.48/sec |
 | web server, nginx load balancer, async | 1034.57/sec | 2550.42/sec | 2601.63/sec |
+
+### Hasil perbandingan
+#### Web server non loadbalancer synchronous vs asynchronous
+Dari hasil benchmark terlihat asynchronous memiliki performa lebih cepat (Req per second lebih besar) dibanding synchronous, meskipun pada suatu titik terkadang synchronous lebih cepat. Tanda bahwa selisih performa tidak begitu jauh.
+
+#### Web server with python loadbalancer vs non loadbalancer
+Dari hasil benchmark terlihat ternyata web server non loadbalancer memiliki performa lebih cepat dibanding web server loadbalancer, selisih sangat jauh.
+
+#### Web server python loadbalancer vs nginx loadbalancer
+Dari hasil benchmark terlihat selisih sangat jauh, web server nginx loadbalancer memiliki performa jauh lebih cepat.
