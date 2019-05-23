@@ -6,7 +6,7 @@ Final Project matakuliah Pemrograman Jaringan oleh Alam, Firman dan Chendra
 ``` $py server_thread_http.py ``` untuk synchronous,
 ``` $py server_async_http.py ``` untuk asynchronous
 
-### Untuk web server dengan load balancer ###
+### Untuk web server dengan python script load balancer ###
 Pertama, jalankan
 ```
 bash $py load_balancer.py
@@ -14,52 +14,27 @@ bash $py load_balancer.py
 Kemudian untuk synchronous jalankan ```$bash run_sync_http.sh```
 Sementara untuk asynchronous jalankan ```$bash run_async_http.sh```
 
+### Untuk web server dengan nginx load balancer ###
+#### Pertama, setting nginx terlebih dahulu:
+Buka ```nginx.conf``` pada ```/etc/nginx```, tambahkan ini pada bagian http:
+```
+upstream node {
+    server 127.0.0.1:9001;
+    server 127.0.0.1:9002;
+    server 127.0.0.1:9003;
+    server 127.0.0.1:9004;
+    server 127.0.0.1:9005;
+}
+```
+Setelah  itu buka ```default``` pada ```/etc/nginx/sites-available```. Ubah bagian isi ```location /``` menjadi:
+```
+location / {
+        proxy_pass http://node;
+    }
+```
+Kemudian jalankan ```service nginx restart```
+
+#### Kedua, jalankan bash script
+Jalankan ```$bash run_sync_http.sh``` untuk synchronous, atau ```$bash run_async_http.sh``` untuk asynchronous.
+
 # Hasil Apache Benchmark #
-### Web server tanpa load balancer synchronous ###
-Jumlah request 100, concurrency 1
-```
-This is ApacheBench, Version 2.3 <$Revision: 1807734 $>
-Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
-Licensed to The Apache Software Foundation, http://www.apache.org/
-
-Benchmarking localhost (be patient).....done
-
-
-Server Software:        myserver/1.0
-Server Hostname:        localhost
-Server Port:            8887
-
-Document Path:          /testing.txt
-Document Length:        20 bytes
-
-Concurrency Level:      1
-Time taken for tests:   0.120 seconds
-Complete requests:      100
-Failed requests:        0
-Total transferred:      15600 bytes
-HTML transferred:       2000 bytes
-Requests per second:    833.68 [#/sec] (mean)
-Time per request:       1.200 [ms] (mean)
-Time per request:       1.200 [ms] (mean, across all concurrent requests)
-Transfer rate:          127.01 [Kbytes/sec] received
-
-Connection Times (ms)
-              min  mean[+/-sd] median   max
-Connect:        0    0   0.0      0       0
-Processing:     1    1   1.5      1      16
-Waiting:        0    1   1.5      1      16
-Total:          1    1   1.5      1      16
-
-Percentage of the requests served within a certain time (ms)
-  50%      1
-  66%      1
-  75%      1
-  80%      1
-  90%      1
-  95%      1
-  98%      1
-  99%     16
- 100%     16 (longest request)
-
-```
-
